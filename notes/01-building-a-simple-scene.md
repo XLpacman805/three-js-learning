@@ -52,5 +52,38 @@ renderer.render(scene, camera);
 
 3D objects in ThreeJS are made up of two parts, that creates a "mesh".
 - A geometry (defines shape)
-- A material (defines surface quality, the appearance).
+- A material (defines surface quality, the appearance,).
 
+### Geometry ###
+```js
+const geometry = new THREE.BoxGeometry(1, 1, 1);
+```
+
+### Materials ###
+
+Determines how the object reacts to the scene lighting. A *Mesh Basic Material* is unaffected by scene lighting and will show even when dark.
+
+### Troubleshooting ###
+
+ThreeJS editor can help visualize whats happening in the scene.
+
+`https://threejs.org/editor/`
+
+Remember:
+
+- Items when created are always placed at XYZ(0, 0, 0);
+
+- Including the camera, unless the camera or objects are move, the camera won't be able to see anything.
+
+
+### Transformation Properties ###
+
+1. position
+
+2. rotation
+
+3. scale
+
+```js
+camera.position.z = 5;
+```
