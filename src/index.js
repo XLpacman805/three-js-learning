@@ -1,24 +1,36 @@
 import * as THREE from 'three/build/three';
+import * as dat from 'dat.gui';
+
 const hexColors = new Map([
     ['green', 0x00FF00],
     ['white', 0xFFFFFF],
-    ['red', 0xFF0000]
+    ['red', 0xFF0000],
+    ['gray', 'rgb(120, 120, 120)']
 ]);
 
 const init = () => {
     const scene = new THREE.Scene();
     const box = createBoxMesh();
     const plane = creatPlaneMesh(20);
+    const enableFog = false;
+    const pointLight = createPointLight(1);
+    const sphere = createSphereMesh(0.05);
 
     plane.name = 'plane-1';
 
     box.position.y = box.geometry.parameters.height / 2
     plane.rotation.x = Math.PI / 2;
+    pointLight.position.y = 2;
+
 
     scene.add(box);
     scene.add(plane);
+    scene.add(pointLight);
+    pointLight.add(sphere);
 
-    scene.fog = new THREE.FogExp2(hexColors.get('white'), 0.2);
+    if (enableFog) {
+        scene.fog = new THREE.FogExp2(hexColors.get('white'), 0.2);
+    }
 
     const camera = new THREE.PerspectiveCamera(
         45,
@@ -34,7 +46,7 @@ const init = () => {
 
     const renderer = new THREE.WebGL1Renderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(hexColors.get('white'));
+    renderer.setClearColor(hexColors.get('gray'));
     document.getElementById('webgl').appendChild(renderer.domElement);
     update(renderer, scene, camera);
 
@@ -43,8 +55,8 @@ const init = () => {
 
 const createBoxMesh = (w = 1, h = 1 ,d = 1) => {
     const geometry = new THREE.BoxGeometry(w, h, d);
-    const material = new THREE.MeshBasicMaterial({
-        color: hexColors.get('green')
+    const material = new THREE.MeshPhongMaterial({
+        color: hexColors.get('gray')
     });
 
     return new THREE.Mesh(geometry, material);
@@ -53,12 +65,27 @@ const createBoxMesh = (w = 1, h = 1 ,d = 1) => {
 
 const creatPlaneMesh = (size = 1) => {
     const geometry = new THREE.PlaneGeometry(size, size);
-    const material = new THREE.MeshBasicMaterial({
-        color: hexColors.get('red'),
+    const material = new THREE.MeshPhongMaterial({
+        color: hexColors.get('gray'),
         side: THREE.DoubleSide
     });
 
     return new THREE.Mesh(geometry, material);
+}
+
+const createSphereMesh = (r = 1) => {
+    const geometry = new THREE.SphereGeometry(r, 24, 24);
+    const material = new THREE.MeshBasicMaterial({
+        color: hexColors.get('white')
+    });
+
+    return new THREE.Mesh(geometry, material);
+}
+
+
+const createPointLight = (intensity) => {
+    const light = new THREE.PointLight(hexColors.get('white'), intensity);
+    return light;
 }
 
 const update = (renderer, scene, camera) => {
