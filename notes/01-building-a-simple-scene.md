@@ -87,3 +87,32 @@ Remember:
 ```js
 camera.position.z = 5;
 ```
+
+### Camera lookAt Method ###
+
+`lookAt`, is a method on the `camera` that determines where the camera is looking at. 
+
+```js
+camera.lookAt(new THREE.Vector3(0, 0, 0));
+```
+
+## Create a Ground Plane ##
+
+Plane Geometry requires a width and height parameter. For a 2D object, the mesh needs a side property.
+
+```js
+{size: THREE.DoubleSide}
+```
+
+### Rotation ###
+
+Rotations are done in radians not degrees. Google "unit circle". My trigonometry was right, I should of memorized it instead of just looking it up when I need it. I was right too, because I can just google the unit circle at will, though googling is slower.
+
+### Box Geometry Parameters ###
+
+Box geometry parameters can give you the current height.
+
+```js
+box.geometry.parameters.height
+```
+
