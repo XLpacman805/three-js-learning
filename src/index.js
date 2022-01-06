@@ -1,5 +1,6 @@
 import * as THREE from 'three/build/three';
 import * as dat from 'dat.gui';
+import { OrbitControls } from './OrbitControls';
 
 const hexColors = new Map([
     ['green', 0x00FF00],
@@ -9,8 +10,9 @@ const hexColors = new Map([
 ]);
 
 const init = () => {
+    const gui = new dat.GUI();
     const scene = new THREE.Scene();
-    const box = createBoxMesh();
+    const boxGrid = createBoxGrid(10, 1.5);
     const plane = creatPlaneMesh(20);
     const enableFog = false;
     const pointLight = createPointLight(1);
@@ -18,12 +20,16 @@ const init = () => {
 
     plane.name = 'plane-1';
 
-    box.position.y = box.geometry.parameters.height / 2
+
     plane.rotation.x = Math.PI / 2;
     pointLight.position.y = 2;
+    pointLight.intensity = 2;
+    gui.add(pointLight, 'intensity', 0, 10);
+    gui.add(pointLight.position, 'x', -10, 10);
+    gui.add(pointLight.position, 'y', 0, 10);
+    gui.add(pointLight.position, 'z', -10, 10);
 
-
-    scene.add(box);
+    scene.add(boxGrid);
     scene.add(plane);
     scene.add(pointLight);
     pointLight.add(sphere);
@@ -44,11 +50,15 @@ const init = () => {
     camera.position.y = 2;
     camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-    const renderer = new THREE.WebGL1Renderer();
+    const renderer = new THREE.WebGLRenderer();
+    renderer.shadowMap.enabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(hexColors.get('gray'));
     document.getElementById('webgl').appendChild(renderer.domElement);
-    update(renderer, scene, camera);
+
+    const orbitControls = new OrbitControls(camera, renderer.domElement);
+
+    update(renderer, scene, camera, orbitControls);
 
     return scene;
 }
@@ -58,8 +68,10 @@ const createBoxMesh = (w = 1, h = 1 ,d = 1) => {
     const material = new THREE.MeshPhongMaterial({
         color: hexColors.get('gray')
     });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.castShadow = true;
 
-    return new THREE.Mesh(geometry, material);
+    return mesh;
 }
 
 
@@ -69,8 +81,10 @@ const creatPlaneMesh = (size = 1) => {
         color: hexColors.get('gray'),
         side: THREE.DoubleSide
     });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.receiveShadow = true;
 
-    return new THREE.Mesh(geometry, material);
+    return mesh;
 }
 
 const createSphereMesh = (r = 1) => {
@@ -82,18 +96,43 @@ const createSphereMesh = (r = 1) => {
     return new THREE.Mesh(geometry, material);
 }
 
+const createBoxGrid = (amount, seperationMultiplier) => {
+    const group = new THREE.Group();
+
+    for (let i = 0; i < amount; i++) {
+        const obj = createBoxMesh(1, 1, 1);
+        obj.position.x = i * seperationMultiplier;
+        obj.position.y = obj.geometry.parameters.height / 2;
+        group.add(obj);
+        for (let j = 0; j < amount; j++) {
+            const obj = createBoxMesh(1, 1, 1);
+            obj.position.x = i * seperationMultiplier;
+            obj.position.y = obj.geometry.parameters.height / 2;
+            obj.position.z = j * seperationMultiplier;
+            group.add(obj);
+        }
+    }
+
+    group.position.x = -(seperationMultiplier * (amount - 1))/2 ;
+    group.position.z = -(seperationMultiplier * (amount - 1))/2 ;
+    return group;
+
+}
 
 const createPointLight = (intensity) => {
     const light = new THREE.PointLight(hexColors.get('white'), intensity);
+    light.castShadow = true;
     return light;
 }
 
-const update = (renderer, scene, camera) => {
+const update = (renderer, scene, camera, controls) => {
     renderer.render(scene, camera);
+
+    controls.update();
 
     // Like setInverval but gets called for every frame instead of time interval.
     requestAnimationFrame(() => {
-        update(renderer, scene, camera);
+        update(renderer, scene, camera, controls);
     });
 }
 
