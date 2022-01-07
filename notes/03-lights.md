@@ -64,3 +64,30 @@ mesh.castShadow = true;
 const mesh2 = new THREE.Mesh(geometry2, material2);
 mesh2.recieveShadow = true;
 ```
+
+## SpotLight ##
+
+Similar to a point light, but its shape is a cone. 
+
+```js
+const createSpotLight = (intensity) => {
+    const light = new THREE.SpotLight(hexColors.get('white'), intensity);
+    light.castShadow = true;
+    return light;
+}
+```
+
+### Shadow Maps ###
+
+`spotLight.penumbra` takes a value between from 0 to 1, and that controls the lights "crispness" or "feathering". Three.js uses shadow maps and sometimes that can produce artifacts in the shadows. In the case of the cube grid, and the bottom it looked like there was underglow beneath the cube instead of shadows. That can be fixed with shadow bias. `light.shadow.bias = 0.001`
+
+Shadows when they are far away from the light source start to look blurry. This is also due to shadow maps. Their default resolution is 1024, but its adjustable. Increasing this too much can negatively affect performance.
+
+```js
+light.shadow.mapSize.width = 2048;
+light.shadow.mapSize.height = 2048;
+```
+
+## DirectionalLight ##
+
+Directional lights emit parallel light rays. Great for simulating light sources that are very far away, like the sun. This makes the shadows cast by the directional lights, all parallel to each other.

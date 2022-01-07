@@ -15,24 +15,25 @@ const init = () => {
     const boxGrid = createBoxGrid(10, 1.5);
     const plane = creatPlaneMesh(20);
     const enableFog = false;
-    const pointLight = createPointLight(1);
+    const spotLight = createSpotLight(1);
     const sphere = createSphereMesh(0.05);
 
     plane.name = 'plane-1';
 
 
     plane.rotation.x = Math.PI / 2;
-    pointLight.position.y = 2;
-    pointLight.intensity = 2;
-    gui.add(pointLight, 'intensity', 0, 10);
-    gui.add(pointLight.position, 'x', -10, 10);
-    gui.add(pointLight.position, 'y', 0, 10);
-    gui.add(pointLight.position, 'z', -10, 10);
+    spotLight.position.y = 4;
+    spotLight.intensity = 2;
+    gui.add(spotLight, 'intensity', 0, 10);
+    gui.add(spotLight.position, 'x', -10, 10);
+    gui.add(spotLight.position, 'y', 0, 10);
+    gui.add(spotLight.position, 'z', -10, 10);
+    gui.add(spotLight, 'penumbra', 0, 1);
 
     scene.add(boxGrid);
     scene.add(plane);
-    scene.add(pointLight);
-    pointLight.add(sphere);
+    scene.add(spotLight);
+    spotLight.add(sphere);
 
     if (enableFog) {
         scene.fog = new THREE.FogExp2(hexColors.get('white'), 0.2);
@@ -122,6 +123,15 @@ const createBoxGrid = (amount, seperationMultiplier) => {
 const createPointLight = (intensity) => {
     const light = new THREE.PointLight(hexColors.get('white'), intensity);
     light.castShadow = true;
+    return light;
+}
+
+const createSpotLight = (intensity) => {
+    const light = new THREE.SpotLight(hexColors.get('white'), intensity);
+    light.castShadow = true;
+    light.shadow.bias = 0.001;
+    light.shadow.mapSize.width = 2048;
+    light.shadow.mapSize.height = 2048;
     return light;
 }
 
