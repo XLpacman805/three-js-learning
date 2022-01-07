@@ -6,7 +6,8 @@ const hexColors = new Map([
     ['green', 0x00FF00],
     ['white', 0xFFFFFF],
     ['red', 0xFF0000],
-    ['gray', 'rgb(120, 120, 120)']
+    ['gray', 'rgb(120, 120, 120)'],
+    ['blue', 'rgb(10, 30, 50)']
 ]);
 
 const init = () => {
@@ -16,6 +17,7 @@ const init = () => {
     const plane = creatPlaneMesh(20);
     const enableFog = false;
     const directionalLight = createDirectionalLight(1);
+    const ambientLight = createAmbientLight(1);
     const helper = new THREE.CameraHelper(directionalLight.shadow.camera);
     const sphere = createSphereMesh(0.05);
 
@@ -23,17 +25,21 @@ const init = () => {
 
 
     plane.rotation.x = Math.PI / 2;
-    directionalLight.position.y = 4;
+    directionalLight.position.x = 13;
+    directionalLight.position.y = 10;
+    directionalLight.position.z = 10;
     directionalLight.intensity = 2;
     gui.add(directionalLight, 'intensity', 0, 10);
-    gui.add(directionalLight.position, 'x', -10, 10);
-    gui.add(directionalLight.position, 'y', 0, 10);
-    gui.add(directionalLight.position, 'z', -10, 10);
+    gui.add(directionalLight.position, 'x', -20, 20);
+    gui.add(directionalLight.position, 'y', -20, 20);
+    gui.add(directionalLight.position, 'z', -20, 20);
 
     scene.add(boxGrid);
     scene.add(plane);
     scene.add(directionalLight);
     scene.add(helper);
+    scene.add(ambientLight);
+
     directionalLight.add(sphere);
 
     if (enableFog) {
@@ -143,6 +149,11 @@ const createDirectionalLight = (intensity) => {
     light.shadow.camera.right = 10;
     light.shadow.camera.top = 10;
     light.shadow.camera.bottom = -10;
+    return light;
+}
+
+const createAmbientLight = (intensity) => {
+    const light = new THREE.AmbientLight(hexColors.get('blue'), intensity);
     return light;
 }
 

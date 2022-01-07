@@ -118,3 +118,7 @@ const createDirectionalLight = (intensity) => {
     return light;
 }
 ```
+
+## Ambient Light ##
+
+It illuminates all objects in the scene equally. It has no direction and casts no shadows. Not good for realism but good for a uniform brightness or coloring all shadows. Use it sparingly.
