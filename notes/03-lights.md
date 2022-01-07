@@ -90,4 +90,31 @@ light.shadow.mapSize.height = 2048;
 
 ## DirectionalLight ##
 
-Directional lights emit parallel light rays. Great for simulating light sources that are very far away, like the sun. This makes the shadows cast by the directional lights, all parallel to each other.
+Directional lights emit parallel light rays. Great for simulating light sources that are very far away, like the sun. This makes the shadows cast by the directional lights, all parallel to each other. Directional lights don't have a penumbra parameter.
+
+### Camera Helper ###
+
+In Three.js you can think of shadows as being cast from a camera, that is sharing the same position as the lights. The camera helper is a geometry that shows us the field of view of a camera. `const helper = new THREE.CameraHelper(directionalLight.shadow.camera);`
+
+Objects beyond the point of view of the camera, won't cast any shadows. Exending the field of view of the shadow camera will fix the problem.
+
+```js
+/** 
+ * Default values for light shadow camera.
+ * {object} light.shadow.camera
+ * {property} light.shadow.camera.left = -5
+ * {property} light.shadow.camera.right = 5
+ * {property} light.shadow.camera.top = 5
+ * {property} light.shadow.bottom = -5;
+ **/
+
+const createDirectionalLight = (intensity) => {
+    const light = new THREE.DirectionalLight(hexColors.get('white'), intensity);
+    light.castShadow = true;
+    light.shadow.camera.left = -10;
+    light.shadow.camera.right = 10;
+    light.shadow.camera.top = 10;
+    light.shadow.camera.bottom = -10;
+    return light;
+}
+```

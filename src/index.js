@@ -15,25 +15,26 @@ const init = () => {
     const boxGrid = createBoxGrid(10, 1.5);
     const plane = creatPlaneMesh(20);
     const enableFog = false;
-    const spotLight = createSpotLight(1);
+    const directionalLight = createDirectionalLight(1);
+    const helper = new THREE.CameraHelper(directionalLight.shadow.camera);
     const sphere = createSphereMesh(0.05);
 
     plane.name = 'plane-1';
 
 
     plane.rotation.x = Math.PI / 2;
-    spotLight.position.y = 4;
-    spotLight.intensity = 2;
-    gui.add(spotLight, 'intensity', 0, 10);
-    gui.add(spotLight.position, 'x', -10, 10);
-    gui.add(spotLight.position, 'y', 0, 10);
-    gui.add(spotLight.position, 'z', -10, 10);
-    gui.add(spotLight, 'penumbra', 0, 1);
+    directionalLight.position.y = 4;
+    directionalLight.intensity = 2;
+    gui.add(directionalLight, 'intensity', 0, 10);
+    gui.add(directionalLight.position, 'x', -10, 10);
+    gui.add(directionalLight.position, 'y', 0, 10);
+    gui.add(directionalLight.position, 'z', -10, 10);
 
     scene.add(boxGrid);
     scene.add(plane);
-    scene.add(spotLight);
-    spotLight.add(sphere);
+    scene.add(directionalLight);
+    scene.add(helper);
+    directionalLight.add(sphere);
 
     if (enableFog) {
         scene.fog = new THREE.FogExp2(hexColors.get('white'), 0.2);
@@ -132,6 +133,16 @@ const createSpotLight = (intensity) => {
     light.shadow.bias = 0.001;
     light.shadow.mapSize.width = 2048;
     light.shadow.mapSize.height = 2048;
+    return light;
+}
+
+const createDirectionalLight = (intensity) => {
+    const light = new THREE.DirectionalLight(hexColors.get('white'), intensity);
+    light.castShadow = true;
+    light.shadow.camera.left = -10;
+    light.shadow.camera.right = 10;
+    light.shadow.camera.top = 10;
+    light.shadow.camera.bottom = -10;
     return light;
 }
 
