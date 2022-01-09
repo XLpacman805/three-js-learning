@@ -122,3 +122,13 @@ const createDirectionalLight = (intensity) => {
 ## Ambient Light ##
 
 It illuminates all objects in the scene equally. It has no direction and casts no shadows. Not good for realism but good for a uniform brightness or coloring all shadows. Use it sparingly.
+
+## RectAreaLight ##
+
+- Pointlights and Spotlights are poor approximations of real life light sources. They have no dimensions, so the reflections, shadows, and lighting look fake. 
+
+- Rectangle Area Lights look more real. It's a 2D light source. 
+
+Exmaple: https://threejs.org/examples/#webgl_lights_rectarealight
+
+Docs: https://threejs.org/docs/#api/en/lights/RectAreaLight

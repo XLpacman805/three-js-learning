@@ -1,6 +1,6 @@
 import * as THREE from 'three/build/three';
 import * as dat from 'dat.gui';
-import { OrbitControls } from './OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 const hexColors = new Map([
     ['green', 0x00FF00],
